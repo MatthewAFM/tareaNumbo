@@ -1,0 +1,79 @@
+# Tablero inicial
+tablero = [[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0],[0, 0, 0, 0, 0, 0]]
+#Para realizar este código use parte del que hicimos de totito. 
+# Variables
+hay_ganador = False
+turno_actual = True
+objetivo = 15  # Segun estaba viendo las instrucciones del juego debemos de alcanzar la suma de una cantidad para ganar. 
+                #Igual este valor puede cambiar según lo deseamos 
+
+#Estaba investigado el funcionamiento del juego, y encontre que algunos tenian isntrucciones distintas, por lo tanto
+#creo q me faltan condiciones, las cuales no logre saber como hacerlas o bien como aplicarlas, creo que una de las reglas
+#era que debia de colocarse en la misma columna y fila del anterior turno el siguiente numero. Las reglas que yo encontre, decian que el juego 
+#acababa cuando se obtenia la suma de cierta cantidad. y en eso se basa este codigo. 
+
+# tablero
+def imprimir_tablero(tablero):
+    print("Este es el tablero actual: ")
+    tablero_cadena = ""
+    for fila in tablero:
+        for celda in fila:
+            tablero_cadena = tablero_cadena + str(celda) + " "
+        tablero_cadena = tablero_cadena + "\n"
+    print(tablero_cadena)
+
+def imprimir_instrucciones():
+    print("""
+Bienvenido a Numbo.
+    En este juego, cada jugador coloca números en el tablero de 6x6.
+    El objetivo es lograr que la suma de una fila, columna o diagonal sea un número específico.
+    Los turnos se alternan.
+    """)
+
+def juego_terminado(tablero):
+    # Revisar filas y columnas
+    #Para esta parte tenía duda de como hacerla, por lo tanto tuve que buscar como poder hacerla y guiarme con eso. 
+    for i in range(6):
+        if sum(tablero[i]) == objetivo or sum([fila[i] for fila in tablero]) == objetivo:
+            return True
+
+    # Revisar diagonales
+    diagonal1 = sum([tablero[i][i] for i in range(6)]) 
+    diagonal2 = sum([tablero[i][5-i] for i in range(6)])
+    if diagonal1 == objetivo or diagonal2 == objetivo:
+        return True
+    #----------------------------------------
+    # Verificar si el tablero está lleno
+    for fila in tablero:
+        if 0 in fila:
+            return False
+    return True
+
+def jugada_legal(tablero, nuevo_fila, nueva_columna):
+    return tablero[nuevo_fila][nueva_columna] == 0
+
+
+imprimir_instrucciones()
+imprimir_tablero(tablero)
+
+while not juego_terminado(tablero):
+    try:
+        print(f"Turno del {'Jugador 1' if turno_actual else 'Jugador 2'}")
+        ingreso_x = int(input("Ingrese su fila: ")) - 1
+        ingreso_y = int(input("Ingrese su columna: ")) - 1
+        numero = int(input("Ingrese un número (0-9): "))
+
+        if not (0 <= numero <= 9):
+            print("Número fuera de rango. Intente nuevamente.")
+            continue
+
+        if jugada_legal(tablero, ingreso_x, ingreso_y):
+            tablero[ingreso_x][ingreso_y] = numero
+            turno_actual = not turno_actual
+            imprimir_tablero(tablero)
+        else:
+            print("Jugada ilegal, la casilla ya está ocupada. Intente nuevamente.")
+    except:
+        print("Entrada no válida. Por favor, ingrese números válidos.")
+
+print("El juego ha terminado.")
